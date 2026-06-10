@@ -182,6 +182,39 @@ nav{
 .note-card.open .note-card-head{border-bottom-color:var(--edge2)}
 .search-count{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.08em;flex-shrink:0}
 .notes-empty{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:0.08em;padding:20px 0;text-align:center;border:1px dashed var(--edge)}
+.cat-pick{display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 2px}
+.cat-pill{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;
+  color:var(--dim);transition:all 0.15s;
+}
+.cat-pill:hover{color:var(--text)}
+.cat-pill.sel{color:var(--sky);border-color:transparent}
+.cat-pill[data-cat="python"].sel{background:#3B82F6}
+.cat-pill[data-cat="math"].sel{background:#A855F7}
+.cat-pill[data-cat="physics"].sel{background:#F97316}
+.cat-pill[data-cat="general"].sel{background:var(--dim)}
+.cat-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cf-btn{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;
+  color:var(--dim);transition:all 0.15s;
+}
+.cf-btn:hover{color:var(--text)}
+.cf-btn.active{color:var(--sky);border-color:transparent}
+.cf-btn[data-f="all"].active{background:var(--edge2);color:var(--text)}
+.cf-btn[data-f="python"].active{background:#3B82F6}
+.cf-btn[data-f="math"].active{background:#A855F7}
+.cf-btn[data-f="physics"].active{background:#F97316}
+.cf-btn[data-f="general"].active{background:var(--dim)}
+.note-badge{
+  font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:2px 7px;flex-shrink:0;border:none;
+}
+.note-badge.python{background:rgba(59,130,246,0.15);color:#60A5FA}
+.note-badge.math{background:rgba(168,85,247,0.15);color:#C084FC}
+.note-badge.physics{background:rgba(249,115,22,0.15);color:#FB923C}
+.note-badge.general{background:var(--edge2);color:var(--mid)}
 
 /* ── REFS ── */
 .ref-section-title{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;color:var(--dim);text-transform:uppercase;margin:24px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--edge)}
@@ -264,14 +297,28 @@ nav{
     <div class="note-compose">
       <input class="note-heading-input" id="note-title-input" type="text" placeholder="Heading — e.g. RK4 vs Euler stability" maxlength="80">
       <textarea class="note-body-input" id="note-input" placeholder="Note body — question, idea, formula, code snippet..." rows="3"></textarea>
-      <div class="compose-footer">
-        <button class="btn-add" onclick="addNote()">+ Add note &nbsp;(Ctrl+Enter)</button>
+      <div class="compose-footer" style="justify-content:space-between;align-items:center">
+        <div class="cat-pick" id="cat-pick">
+          <button class="cat-pill sel" data-cat="general" onclick="selectCat('general')">General</button>
+          <button class="cat-pill" data-cat="python" onclick="selectCat('python')">Python</button>
+          <button class="cat-pill" data-cat="math" onclick="selectCat('math')">Math</button>
+          <button class="cat-pill" data-cat="physics" onclick="selectCat('physics')">Physics</button>
+        </div>
+        <button class="btn-add" onclick="addNote()">+ Add &nbsp;(Ctrl+Enter)</button>
       </div>
     </div>
 
     <div class="notes-toolbar">
       <input class="note-search" id="note-search" type="text" placeholder="Search headings..." oninput="renderNotes()">
       <span class="search-count" id="search-count"></span>
+    </div>
+
+    <div class="cat-filter">
+      <button class="cf-btn active" data-f="all" onclick="setFilter('all',this)">All</button>
+      <button class="cf-btn" data-f="python" onclick="setFilter('python',this)">Python</button>
+      <button class="cf-btn" data-f="math" onclick="setFilter('math',this)">Math</button>
+      <button class="cf-btn" data-f="physics" onclick="setFilter('physics',this)">Physics</button>
+      <button class="cf-btn" data-f="general" onclick="setFilter('general',this)">General</button>
     </div>
 
     <div class="notes-list" id="notes-list"></div>
@@ -457,10 +504,23 @@ function show(name,btn){
 }
 
 // notes
-let notes=JSON.parse(localStorage.getItem('6dof-notes-v3')||'[]');
+let notes=JSON.parse(localStorage.getItem('6dof-notes-v4')||'[]');
 let openNotes=new Set();
+let activeCat='general';
+let activeFilter='all';
 
-function saveNotes(){localStorage.setItem('6dof-notes-v3',JSON.stringify(notes))}
+function saveNotes(){localStorage.setItem('6dof-notes-v4',JSON.stringify(notes))}
+
+function selectCat(cat){
+  activeCat=cat;
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.toggle('sel',p.dataset.cat===cat));
+}
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.cf-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));
+  renderNotes();
+}
 
 function addNote(){
   const titleEl=document.getElementById('note-title-input');
@@ -472,6 +532,7 @@ function addNote(){
     id:Date.now(),
     title:title||'Untitled',
     body:body,
+    cat:activeCat,
     ts:new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
   };
   notes.unshift(n);
@@ -509,21 +570,27 @@ function renderNotes(){
   const q=(document.getElementById('note-search')?.value||'').trim().toLowerCase();
   const el=document.getElementById('notes-list');
   const countEl=document.getElementById('search-count');
-  const filtered=q?notes.filter(n=>n.title.toLowerCase().includes(q)):notes;
-  if(countEl)countEl.textContent=q?`${filtered.length} result${filtered.length!==1?'s':''}`:notes.length?`${notes.length} note${notes.length!==1?'s':''}`:'' ;
+  let filtered=notes;
+  if(activeFilter!=='all') filtered=filtered.filter(n=>(n.cat||'general')===activeFilter);
+  if(q) filtered=filtered.filter(n=>n.title.toLowerCase().includes(q));
+  const total=activeFilter==='all'?notes.length:notes.filter(n=>(n.cat||'general')===activeFilter).length;
+  if(countEl) countEl.textContent=q?`${filtered.length} result${filtered.length!==1?'s':''}`:total?`${total} note${total!==1?'s':''}`:'';
   if(!filtered.length){
-    el.innerHTML=`<div class="notes-empty">${q?'No notes match "'+esc(q)+'"':'No notes yet — add one above'}</div>`;
+    el.innerHTML=`<div class="notes-empty">${q?'No notes match "'+esc(q)+'"':'No notes in this category yet'}</div>`;
     return;
   }
-  el.innerHTML=filtered.map(n=>`
-    <div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}">
+  el.innerHTML=filtered.map(n=>{
+    const cat=n.cat||'general';
+    return`<div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}">
       <div class="note-card-head" onclick="toggleNote(${n.id})">
+        <span class="note-badge ${cat}">${cat}</span>
         <span class="note-title">${highlight(n.title,q)}</span>
         <span class="note-ts">${n.ts}</span>
         <button class="btn-del" onclick="deleteNote(${n.id},event)" title="Delete">✕</button>
       </div>
       ${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 document.getElementById('note-input').addEventListener('keydown',function(e){
