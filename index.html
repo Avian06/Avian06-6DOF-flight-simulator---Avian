@@ -1,461 +1,542 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>My projects</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6DOF // Personal Build Log</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#04080F;
+  --deep:#080D18;
+  --panel:#0C1322;
+  --edge:#111C32;
+  --edge2:#1A2840;
+  --horizon:#00D4FF;
+  --hdim:rgba(0,212,255,0.15);
+  --warm:#FF8C42;
+  --dim:#3A4E6B;
+  --mid:#7A90A8;
+  --text:#C8D8E8;
+  --bright:#EEF4FA;
+  --success:#3DD68C;
+  --mono:'Space Mono',monospace;
+  --sans:'Space Grotesk',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--sky);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
 
-  :root {
-    --bg: #f9f9f8;
-    --surface: #ffffff;
-    --surface2: #f3f2ef;
-    --border: rgba(0,0,0,0.1);
-    --border-strong: rgba(0,0,0,0.2);
-    --text: #1a1a18;
-    --text2: #6b6b67;
-    --text3: #9d9d99;
-    --accent: #1a1a18;
-    --green: #1D9E75;
-    --green-bg: #EAF3DE;
-    --green-text: #27500A;
-    --amber-bg: #FAEEDA;
-    --amber-text: #854F0B;
-    --purple-bg: #EEEDFE;
-    --purple-text: #534AB7;
-    --blue-bg: #E6F1FB;
-    --blue-text: #185FA5;
-    --radius: 10px;
-    --radius-sm: 6px;
-  }
+/* ── STARFIELD ── */
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.5}
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #111110;
-      --surface: #1c1c1a;
-      --surface2: #252523;
-      --border: rgba(255,255,255,0.1);
-      --border-strong: rgba(255,255,255,0.2);
-      --text: #f0ede8;
-      --text2: #9d9d99;
-      --text3: #6b6b67;
-      --accent: #f0ede8;
-      --green-bg: #17340a;
-      --green-text: #97C459;
-      --amber-bg: #412402;
-      --amber-text: #FAC775;
-      --purple-bg: #26215C;
-      --purple-text: #AFA9EC;
-      --blue-bg: #042C53;
-      --blue-text: #85B7EB;
-    }
-  }
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;
+  background:rgba(4,8,15,0.9);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--edge);
+}
+.nav-id{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;color:var(--horizon);display:flex;align-items:center;gap:10px}
+.nav-id::before{content:'';display:block;width:6px;height:6px;border-radius:50%;background:var(--horizon);animation:blink 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.nav-right{display:flex;align-items:center;gap:6px}
+.nav-tab{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;
+  padding:7px 14px;cursor:pointer;border:1px solid transparent;
+  background:none;color:var(--dim);transition:color 0.15s,border-color 0.15s;
+}
+.nav-tab:hover{color:var(--text);border-color:var(--edge2)}
+.nav-tab.active{color:var(--horizon);border-color:var(--horizon)}
 
-  html { font-size: 16px; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+/* ── LAYOUT ── */
+.main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:36px 32px 80px}
 
-  .layout { max-width: 780px; margin: 0 auto; padding: 2rem 1.5rem; }
+/* ── HUD HEADER ── */
+.hud{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:32px;gap:24px;flex-wrap:wrap;
+}
+.hud-title{
+  font-size:clamp(26px,4vw,38px);font-weight:600;color:var(--bright);
+  letter-spacing:-0.02em;line-height:1.1;
+}
+.hud-title span{color:var(--horizon)}
+.hud-sub{font-size:13px;color:var(--dim);font-family:var(--mono);margin-top:6px;letter-spacing:0.06em}
+.hud-stats{display:flex;gap:2px;flex-shrink:0}
+.hstat{
+  background:var(--panel);border:1px solid var(--edge);
+  padding:14px 20px;text-align:center;min-width:72px;
+}
+.hstat-n{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--horizon);line-height:1;display:block}
+.hstat-l{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;margin-top:4px;display:block}
 
-  header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 2rem; }
-  header h1 { font-size: 22px; font-weight: 500; letter-spacing: -0.3px; }
-  .header-meta { font-size: 13px; color: var(--text3); }
+/* ── PROGRESS BAR ── */
+.master-progress{margin-bottom:36px}
+.mp-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+.mp-track{height:2px;background:var(--edge2);position:relative}
+.mp-fill{height:2px;background:var(--horizon);transition:width 0.4s ease;position:relative}
+.mp-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--horizon);box-shadow:0 0 8px var(--horizon)}
 
-  .tabs { display: flex; gap: 2px; border-bottom: 0.5px solid var(--border); margin-bottom: 1.5rem; }
-  .tab { padding: 8px 16px; font-size: 14px; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s; }
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--text); border-bottom-color: var(--text); font-weight: 500; }
+/* ── PANELS ── */
+.panel{display:none}.panel.active{display:block}
 
-  .section { display: none; }
-  .section.active { display: block; }
+/* ── WEEK BLOCKS ── */
+.week-block{
+  border:1px solid var(--edge);background:var(--panel);
+  margin-bottom:12px;transition:border-color 0.2s;
+}
+.week-block:hover{border-color:var(--edge2)}
+.week-head{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 18px;cursor:pointer;user-select:none;
+}
+.week-num{
+  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
+  color:var(--horizon);min-width:52px;
+}
+.week-name{font-size:14px;font-weight:500;color:var(--bright);flex:1}
+.week-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;border:1px solid var(--edge2);padding:3px 8px}
+.week-count{font-family:var(--mono);font-size:11px;color:var(--dim)}
+.wk-progress{height:1px;background:var(--edge2)}
+.wk-bar{height:1px;background:var(--horizon);transition:width 0.3s}
+.task-list{padding:6px 0 10px}
+.task-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:8px 18px;cursor:pointer;transition:background 0.12s;
+}
+.task-row:hover{background:rgba(255,255,255,0.03)}
+.cb{
+  width:14px;height:14px;border:1px solid var(--dim);
+  flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;
+  transition:border-color 0.15s,background 0.15s;
+}
+.cb.on{border-color:var(--success);background:rgba(61,214,140,0.12)}
+.cb.on::after{content:'✓';font-size:9px;color:var(--success);font-family:var(--mono)}
+.task-txt{font-size:13px;color:var(--text);line-height:1.5}
+.task-txt.done{color:var(--dim);text-decoration:line-through}
 
-  .add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; font-size: 14px; background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); cursor: pointer; color: var(--text); margin-bottom: 1.25rem; transition: background 0.15s; }
-  .add-btn:hover { background: var(--surface2); }
+/* ── NOTES ── */
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+@media(max-width:600px){.notes-grid{grid-template-columns:1fr}}
+.formula-card{background:var(--panel);border:1px solid var(--edge);padding:16px 18px}
+.fc-label{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;color:var(--dim);text-transform:uppercase;margin-bottom:10px}
+.fc-eq{font-family:var(--mono);font-size:13px;color:var(--warm);line-height:1.8}
+.notes-section-label{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;color:var(--dim);text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--edge)}
+.notes-toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+.note-search{
+  flex:1;height:36px;
+  background:var(--panel);border:1px solid var(--edge);
+  color:var(--text);font-family:var(--mono);font-size:12px;letter-spacing:0.06em;
+  padding:0 12px;transition:border-color 0.15s;
+}
+.note-search:focus{outline:none;border-color:var(--horizon)}
+.note-search::placeholder{color:var(--dim)}
+.note-compose{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;background:var(--panel);border:1px solid var(--edge);padding:14px 16px}
+.note-compose:focus-within{border-color:var(--edge2)}
+.note-heading-input{
+  width:100%;background:none;border:none;border-bottom:1px solid var(--edge);
+  color:var(--bright);font-family:var(--sans);font-size:15px;font-weight:500;
+  padding:0 0 10px 0;margin-bottom:2px;transition:border-color 0.15s;
+}
+.note-heading-input:focus{outline:none;border-bottom-color:var(--horizon)}
+.note-heading-input::placeholder{color:var(--dim)}
+.note-body-input{
+  width:100%;min-height:72px;background:none;border:none;
+  color:var(--text);font-family:var(--sans);font-size:14px;
+  line-height:1.6;padding:8px 0 0;resize:none;
+}
+.note-body-input:focus{outline:none}
+.note-body-input::placeholder{color:var(--dim)}
+.compose-footer{display:flex;justify-content:flex-end}
+.btn-add{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
+  background:none;border:1px solid var(--horizon);color:var(--horizon);
+  padding:7px 16px;cursor:pointer;transition:background 0.15s,color 0.15s;
+}
+.btn-add:hover{background:var(--horizon);color:var(--sky)}
+.notes-list{display:flex;flex-direction:column;gap:8px}
+.note-card{
+  background:var(--panel);border:1px solid var(--edge);
+  padding:0;overflow:hidden;transition:border-color 0.15s;
+}
+.note-card:hover{border-color:var(--edge2)}
+.note-card-head{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;border-bottom:1px solid var(--edge);
+  cursor:pointer;user-select:none;
+}
+.note-title{font-size:14px;font-weight:500;color:var(--bright);flex:1}
+.note-title mark{background:rgba(0,212,255,0.2);color:var(--horizon);border-radius:2px}
+.note-ts{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.06em;flex-shrink:0}
+.btn-del{
+  background:none;border:none;cursor:pointer;
+  color:var(--dim);font-size:13px;padding:2px 4px;flex-shrink:0;
+  line-height:1;transition:color 0.15s;
+}
+.btn-del:hover{color:#E05555}
+.note-card-body{padding:12px 16px 14px;font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word;display:none}
+.note-card.open .note-card-body{display:block}
+.note-card.open .note-card-head{border-bottom-color:var(--edge2)}
+.search-count{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.08em;flex-shrink:0}
+.notes-empty{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:0.08em;padding:20px 0;text-align:center;border:1px dashed var(--edge)}
 
-  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; }
+/* ── REFS ── */
+.ref-section-title{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;color:var(--dim);text-transform:uppercase;margin:24px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--edge)}
+.ref-section-title:first-child{margin-top:0}
+.ref-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--edge)}
+.ref-row:last-child{border-bottom:none}
+.ref-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.1em;color:var(--horizon);border:1px solid var(--hdim);padding:3px 8px;flex-shrink:0;min-width:68px;text-align:center}
+.ref-link{font-size:13px;color:var(--text);text-decoration:none;flex:1;transition:color 0.15s}
+.ref-link:hover{color:var(--horizon)}
+.ref-link::after{content:' ↗';font-size:11px;color:var(--dim)}
 
-  .project-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
-  .project-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
-  .project-card.featured { border: 2px solid #185FA5; }
-
-  .card-eyebrow { font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--blue-text); background: var(--blue-bg); display: inline-block; padding: 2px 8px; border-radius: var(--radius-sm); margin-bottom: 8px; }
-  .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
-  .card-title { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.3; }
-
-  .badge { font-size: 11px; padding: 2px 8px; border-radius: var(--radius-sm); font-weight: 500; white-space: nowrap; flex-shrink: 0; }
-  .badge-wip { background: var(--amber-bg); color: var(--amber-text); }
-  .badge-done { background: var(--green-bg); color: var(--green-text); }
-  .badge-idea { background: var(--purple-bg); color: var(--purple-text); }
-
-  .card-desc { font-size: 13px; color: var(--text2); line-height: 1.55; margin-bottom: 10px; }
-  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-  .tag { font-size: 11px; padding: 2px 8px; border-radius: var(--radius-sm); background: var(--surface2); color: var(--text2); border: 0.5px solid var(--border); }
-
-  .progress-bar { height: 3px; background: var(--surface2); border-radius: 2px; margin-top: 10px; }
-  .progress-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width 0.4s; }
-  .progress-label { font-size: 11px; color: var(--text3); margin-top: 4px; }
-
-  /* Detail view */
-  .detail-back { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--text2); cursor: pointer; background: none; border: none; padding: 0; margin-bottom: 1.25rem; transition: color 0.15s; }
-  .detail-back:hover { color: var(--text); }
-
-  .detail-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; }
-  .detail-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
-  .detail-title { font-size: 20px; font-weight: 500; letter-spacing: -0.2px; }
-  .detail-desc { font-size: 14px; color: var(--text2); line-height: 1.6; margin-bottom: 1rem; }
-
-  .big-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); }
-  .big-progress-bar { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; }
-  .big-progress-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width 0.4s; }
-  .big-progress-label { font-size: 13px; color: var(--text2); white-space: nowrap; }
-
-  .week-block { margin-bottom: 1.25rem; }
-  .week-label { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
-  .week-sub-bar { flex: 1; height: 2px; background: var(--surface2); border-radius: 2px; }
-  .week-sub-fill { height: 100%; border-radius: 2px; background: var(--green); transition: width 0.4s; }
-
-  .task-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 0.5px solid var(--border); font-size: 14px; color: var(--text2); line-height: 1.4; }
-  .task-item:last-child { border-bottom: none; }
-  .task-item input[type=checkbox] { margin-top: 2px; flex-shrink: 0; cursor: pointer; accent-color: var(--green); width: 15px; height: 15px; }
-  .task-item.checked { color: var(--text3); text-decoration: line-through; }
-
-  .resources-section { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); }
-  .resources-section h3 { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
-  .resource-item { font-size: 13px; color: var(--text2); padding: 5px 0; display: flex; align-items: flex-start; gap: 8px; border-bottom: 0.5px solid var(--border); }
-  .resource-item:last-child { border-bottom: none; }
-  .resource-item i { font-size: 14px; margin-top: 1px; flex-shrink: 0; color: var(--text3); }
-
-  /* Notes */
-  .notes-list { display: flex; flex-direction: column; gap: 12px; }
-  .note-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; }
-  .note-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .note-title { font-size: 15px; font-weight: 500; }
-  .note-date { font-size: 12px; color: var(--text3); }
-  .note-body { font-size: 14px; color: var(--text2); line-height: 1.6; white-space: pre-wrap; }
-
-  /* Modal */
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; padding: 1rem; }
-  .modal-bg.open { display: flex; }
-  .modal { background: var(--surface); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 1.5rem; width: 420px; max-width: 100%; max-height: 90vh; overflow-y: auto; }
-  .modal h2 { font-size: 18px; font-weight: 500; margin-bottom: 1.25rem; }
-  .field { margin-bottom: 1rem; }
-  .field label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 4px; }
-  .field input, .field textarea, .field select {
-    width: 100%; font-size: 14px; padding: 8px 10px;
-    background: var(--surface2); border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm); color: var(--text); outline: none;
-    font-family: inherit;
-  }
-  .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--border-strong); }
-  .field textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
-  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 1.25rem; }
-  .btn-cancel { padding: 8px 16px; font-size: 14px; background: none; border: 0.5px solid var(--border-strong); border-radius: var(--radius-sm); cursor: pointer; color: var(--text2); }
-  .btn-cancel:hover { background: var(--surface2); }
-  .btn-save { padding: 8px 16px; font-size: 14px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 500; }
-  .btn-save:hover { opacity: 0.85; }
-
-  .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
-  .empty i { font-size: 28px; display: block; margin-bottom: 8px; }
+/* ── RESPONSIVE ── */
+@media(max-width:640px){
+  nav{padding:12px 18px}
+  .main{padding:24px 18px 60px}
+  .hud-stats{display:none}
+  .nav-tab span{display:none}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="layout">
-  <header>
-    <h1>My projects</h1>
-    <span class="header-meta" id="project-count"></span>
-  </header>
 
-  <div class="tabs">
-    <button class="tab active" id="tab-projects" onclick="switchTab('projects')">Projects</button>
-    <button class="tab" id="tab-notes" onclick="switchTab('notes')">Notes & blog</button>
+<canvas id="stars"></canvas>
+
+<nav>
+  <div class="nav-id">6DOF // BUILD LOG</div>
+  <div class="nav-right">
+    <button class="nav-tab active" onclick="show('checklist',this)">Checklist</button>
+    <button class="nav-tab" onclick="show('notes',this)">Notes</button>
+    <button class="nav-tab" onclick="show('refs',this)">References</button>
   </div>
+</nav>
 
-  <div id="projects-section" class="section active">
-    <button class="add-btn" onclick="openProjectModal()">
-      <i class="ti ti-plus"></i> Add project
-    </button>
-    <div id="project-list-view">
-      <div class="projects-grid" id="projects-grid"></div>
+<main class="main">
+
+  <div class="hud">
+    <div>
+      <h1 class="hud-title">6<span>DOF</span> Flight Sim</h1>
+      <p class="hud-sub">PERSONAL BUILD LOG // 4-WEEK PROJECT</p>
     </div>
-    <div id="project-detail-view" style="display:none;"></div>
+    <div class="hud-stats">
+      <div class="hstat"><span class="hstat-n" id="s-done">0</span><span class="hstat-l">Done</span></div>
+      <div class="hstat"><span class="hstat-n" id="s-left">20</span><span class="hstat-l">Left</span></div>
+      <div class="hstat"><span class="hstat-n" id="s-pct">0%</span><span class="hstat-l">Complete</span></div>
+    </div>
   </div>
 
-  <div id="notes-section" class="section">
-    <button class="add-btn" onclick="openNoteModal()">
-      <i class="ti ti-plus"></i> Add note
-    </button>
+  <div class="master-progress">
+    <div class="mp-label"><span>OVERALL PROGRESS</span><span id="mp-txt">0 / 20 tasks</span></div>
+    <div class="mp-track"><div class="mp-fill" id="mp-bar" style="width:0%"></div></div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="panel active" id="panel-checklist"></div>
+
+  <!-- NOTES -->
+  <div class="panel" id="panel-notes">
+    <div class="notes-grid">
+      <div class="formula-card">
+        <div class="fc-label">Equations of motion</div>
+        <div class="fc-eq">F = m·a<br>M = I·α<br>Iẋ = Iω × (Iω) + M</div>
+      </div>
+      <div class="formula-card">
+        <div class="fc-label">Aerodynamics</div>
+        <div class="fc-eq">L = ½ρV²·S·Cl(α)<br>D = ½ρV²·S·Cd(α)<br>M = ½ρV²·S·c·Cm(α)</div>
+      </div>
+      <div class="formula-card">
+        <div class="fc-label">State vector (12 elements)</div>
+        <div class="fc-eq">pos:   x, y, z<br>vel:   u, v, w<br>ang:   φ, θ, ψ<br>rate:  p, q, r</div>
+      </div>
+      <div class="formula-card">
+        <div class="fc-label">RK4 integration</div>
+        <div class="fc-eq">k₁ = f(t, y)·h<br>k₂ = f(t+h/2, y+k₁/2)·h<br>k₃ = f(t+h/2, y+k₂/2)·h<br>k₄ = f(t+h, y+k₃)·h</div>
+      </div>
+    </div>
+
+    <div class="notes-section-label">My notes</div>
+
+    <div class="note-compose">
+      <input class="note-heading-input" id="note-title-input" type="text" placeholder="Heading — e.g. RK4 vs Euler stability" maxlength="80">
+      <textarea class="note-body-input" id="note-input" placeholder="Note body — question, idea, formula, code snippet..." rows="3"></textarea>
+      <div class="compose-footer">
+        <button class="btn-add" onclick="addNote()">+ Add note &nbsp;(Ctrl+Enter)</button>
+      </div>
+    </div>
+
+    <div class="notes-toolbar">
+      <input class="note-search" id="note-search" type="text" placeholder="Search headings..." oninput="renderNotes()">
+      <span class="search-count" id="search-count"></span>
+    </div>
+
     <div class="notes-list" id="notes-list"></div>
   </div>
-</div>
 
-<!-- Project modal -->
-<div class="modal-bg" id="project-modal">
-  <div class="modal">
-    <h2 id="modal-title">New project</h2>
-    <div class="field"><label>Project name</label><input type="text" id="p-name" placeholder="e.g. Arduino weather station" /></div>
-    <div class="field"><label>Description</label><textarea id="p-desc" placeholder="What are you building?"></textarea></div>
-    <div class="field"><label>Status</label>
-      <select id="p-status">
-        <option value="idea">Idea</option>
-        <option value="wip">In progress</option>
-        <option value="done">Done</option>
-      </select>
+  <!-- REFS -->
+  <div class="panel" id="panel-refs">
+    <div class="ref-section-title">Books</div>
+    <div class="ref-row">
+      <span class="ref-tag">textbook</span>
+      <a class="ref-link" href="https://www.sciencedirect.com/book/9780080982427" target="_blank">Flight Dynamics Principles — Michael Cook</a>
     </div>
-    <div class="field"><label>Tags (comma-separated)</label><input type="text" id="p-tags" placeholder="e.g. hardware, Python, IoT" /></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModals()">Cancel</button>
-      <button class="btn-save" onclick="saveProject()">Save project</button>
+    <div class="ref-row">
+      <span class="ref-tag">textbook</span>
+      <a class="ref-link" href="https://www.wiley.com/en-us/Aircraft+Control+and+Simulation-p-9781118870983" target="_blank">Aircraft Control & Simulation — Stevens & Lewis</a>
+    </div>
+    <div class="ref-section-title">Data &amp; Reports</div>
+    <div class="ref-row">
+      <span class="ref-tag">dataset</span>
+      <a class="ref-link" href="https://m-selig.ae.illinois.edu/ads/coord_database.html" target="_blank">UIUC Airfoil Database — Cl/Cd curves for real airfoils</a>
+    </div>
+    <div class="ref-row">
+      <span class="ref-tag">NASA</span>
+      <a class="ref-link" href="https://ntrs.nasa.gov/citations/19770024290" target="_blank">NASA TN D-8057 — Equations of motion derivation</a>
+    </div>
+    <div class="ref-section-title">Python Docs</div>
+    <div class="ref-row">
+      <span class="ref-tag">docs</span>
+      <a class="ref-link" href="https://numpy.org/doc/" target="_blank">NumPy — arrays and linear algebra</a>
+    </div>
+    <div class="ref-row">
+      <span class="ref-tag">docs</span>
+      <a class="ref-link" href="https://docs.scipy.org/doc/scipy/" target="_blank">SciPy — ODE integrators (solve_ivp)</a>
+    </div>
+    <div class="ref-row">
+      <span class="ref-tag">docs</span>
+      <a class="ref-link" href="https://matplotlib.org/stable/users/index.html" target="_blank">Matplotlib — plotting and 3D visualisation</a>
+    </div>
+    <div class="ref-section-title">Video</div>
+    <div class="ref-row">
+      <span class="ref-tag">video</span>
+      <a class="ref-link" href="https://www.youtube.com/results?search_query=6DOF+flight+simulation+python" target="_blank">YouTube: 6DOF flight simulation Python</a>
     </div>
   </div>
-</div>
 
-<!-- Note modal -->
-<div class="modal-bg" id="note-modal">
-  <div class="modal">
-    <h2>New note</h2>
-    <div class="field"><label>Title</label><input type="text" id="n-title" placeholder="e.g. Lessons from my first PCB" /></div>
-    <div class="field"><label>Content</label><textarea id="n-body" placeholder="Write your thoughts..." style="min-height:140px;"></textarea></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModals()">Cancel</button>
-      <button class="btn-save" onclick="saveNote()">Save note</button>
-    </div>
-  </div>
-</div>
+</main>
 
 <script>
-const SIXDOF_TASKS = {
-  "Week 1 — Basics": [
-    { id: 'w1t1', text: 'Set up Python with NumPy, SciPy, and Matplotlib' },
-    { id: 'w1t2', text: 'Define state vector: position, velocity, orientation (Euler angles), angular rates' },
-    { id: 'w1t3', text: 'Implement gravity and simple drag' },
-    { id: 'w1t4', text: 'Integrate with Euler method' },
-    { id: 'w1t5', text: 'Plot a basic trajectory — a cannonball arc is a win' },
-  ],
-  "Week 2 — Aerodynamics": [
-    { id: 'w2t1', text: 'Implement lift and drag using real Cl/Cd curves (UIUC airfoil database)' },
-    { id: 'w2t2', text: 'Add pitching moment' },
-    { id: 'w2t3', text: 'Switch to RK4 integration' },
-  ],
-  "Week 3 — Full 6DOF": [
-    { id: 'w3t1', text: 'Add roll and yaw dynamics' },
-    { id: 'w3t2', text: 'Implement control surface inputs (elevator, aileron, rudder)' },
-    { id: 'w3t3', text: 'Model trimmed straight-and-level flight, then disturb it' },
-  ],
-  "Week 4 — Polish": [
-    { id: 'w4t1', text: 'Add 3D visualisation with Matplotlib or Pygame' },
-    { id: 'w4t2', text: 'Simulate a specific manoeuvre — loop, banked turn, or stall' },
-    { id: 'w4t3', text: 'Write it up and push to GitHub' },
-  ]
-};
+// ── STARFIELD ──
+(function(){
+  const c=document.getElementById('stars');
+  const ctx=c.getContext('2d');
+  let W,H,stars=[];
+  function init(){
+    W=c.width=window.innerWidth;
+    H=c.height=window.innerHeight;
+    stars=Array.from({length:180},()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      r:Math.random()*1.1+0.2,
+      a:Math.random()*0.45+0.05
+    }));
+    draw();
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(180,210,245,${s.a})`;
+      ctx.fill();
+    });
+  }
+  window.addEventListener('resize',init);
+  init();
+})();
 
-const RESOURCES = [
-  'Flight Dynamics Principles — Michael Cook (check your uni library)',
-  'Stevens & Lewis — Aircraft Simulation and Control',
-  'NASA TN D-8057 — equations of motion technical report',
-  'UIUC Airfoil Database — Cl/Cd data for real aircraft',
-  'YouTube: search "6DOF simulation" for end-product demos',
+// ── DATA ──
+const WEEKS=[
+  {num:'WK-01',name:'Foundations',tag:'Python basics',tasks:[
+    'Install NumPy, SciPy, Matplotlib',
+    'Understand the 12-element state vector',
+    'Implement gravity + simple linear drag',
+    'Euler integration loop',
+    'Plot a basic trajectory (cannonball arc)'
+  ]},
+  {num:'WK-02',name:'Aerodynamics',tag:'Physics',tasks:[
+    'Look up NACA 2412 Cl/Cd data from UIUC database',
+    'Implement lift:  L = ½ρV²·S·Cl(α)',
+    'Implement drag:  D = ½ρV²·S·Cd(α)',
+    'Add pitching moment Cm(α)',
+    'Switch Euler → RK4, compare outputs'
+  ]},
+  {num:'WK-03',name:'Full 6DOF',tag:'Dynamics',tasks:[
+    'Add lateral/directional equations of motion',
+    'Implement roll and yaw dynamics',
+    'Model elevator, aileron, rudder as moment inputs',
+    'Calculate a trim (straight-and-level) state',
+    'Apply a step input, observe response'
+  ]},
+  {num:'WK-04',name:'Polish',tag:'Visualisation',tasks:[
+    '3D trajectory plot in Matplotlib',
+    'Simulate a stall or banked turn manoeuvre',
+    'Add simple autopilot or pilot input loop',
+    'Write README explaining the physics',
+    'Push to GitHub'
+  ]}
 ];
 
-const DEFAULT_PROJECTS = [{
-  id: 'sixdof',
-  name: '6DOF flight simulator',
-  desc: "Rigid-body aircraft simulation across 6 degrees of freedom. Models aerodynamic forces and moments, integrates Newton's laws, and can simulate real flight trajectories given pilot inputs.",
-  status: 'wip',
-  tags: ['Python', 'NumPy', 'flight dynamics', 'simulation'],
-  featured: true,
-  hasPlan: true,
-  createdAt: Date.now()
-}];
+let checks=JSON.parse(localStorage.getItem('6dof-v2-checks')||'{}');
 
-const DEFAULT_TASKS = {};
-Object.values(SIXDOF_TASKS).flat().forEach(t => DEFAULT_TASKS[t.id] = false);
+function saveChecks(){localStorage.setItem('6dof-v2-checks',JSON.stringify(checks))}
 
-function load(key, fallback) {
-  try { const v = localStorage.getItem(key); return v !== null ? JSON.parse(v) : fallback; }
-  catch { return fallback; }
-}
-function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
-
-let projects = load('pt_projects', DEFAULT_PROJECTS);
-let notes = load('pt_notes', []);
-let taskState = load('pt_tasks', DEFAULT_TASKS);
-let currentProject = null;
-
-// Ensure all sixdof task ids exist
-Object.values(SIXDOF_TASKS).flat().forEach(t => { if (!(t.id in taskState)) taskState[t.id] = false; });
-
-function persist() {
-  save('pt_projects', projects);
-  save('pt_notes', notes);
-  save('pt_tasks', taskState);
-}
-
-function statusBadge(s) {
-  if (s === 'wip') return '<span class="badge badge-wip">In progress</span>';
-  if (s === 'done') return '<span class="badge badge-done">Done</span>';
-  return '<span class="badge badge-idea">Idea</span>';
-}
-
-function getDone() { return Object.values(taskState).filter(Boolean).length; }
-function getTotal() { return Object.keys(taskState).length; }
-
-function renderProjects() {
-  document.getElementById('project-count').textContent = projects.length + ' project' + (projects.length !== 1 ? 's' : '');
-  const grid = document.getElementById('projects-grid');
-  if (!projects.length) {
-    grid.innerHTML = '<p class="empty"><i class="ti ti-rocket"></i>No projects yet — add your first one!</p>';
-    return;
+function toggle(id){
+  checks[id]=!checks[id];
+  saveChecks();
+  renderStats();
+  // update just this row
+  const row=document.querySelector(`[data-id="${id}"]`);
+  if(row){
+    const cb=row.querySelector('.cb');
+    const txt=row.querySelector('.task-txt');
+    cb.className='cb'+(checks[id]?' on':'');
+    txt.className='task-txt'+(checks[id]?' done':'');
   }
-  grid.innerHTML = projects.map(p => {
-    const done = p.hasPlan ? getDone() : 0;
-    const total = p.hasPlan ? getTotal() : 0;
-    const pct = total ? Math.round(done / total * 100) : 0;
-    return `<div class="project-card ${p.featured ? 'featured' : ''}" onclick="showDetail('${p.id}')">
-      ${p.featured ? '<span class="card-eyebrow">First project</span>' : ''}
-      <div class="card-top">
-        <span class="card-title">${esc(p.name)}</span>
-        ${statusBadge(p.status)}
+  // update week bar
+  const wi=parseInt(id.split('-')[0]);
+  updateWeekBar(wi);
+}
+
+function updateWeekBar(wi){
+  const w=WEEKS[wi];
+  const done=w.tasks.filter((_,ti)=>checks[`${wi}-${ti}`]).length;
+  const pct=Math.round(done/w.tasks.length*100);
+  const bar=document.getElementById(`wkbar-${wi}`);
+  const count=document.getElementById(`wkcount-${wi}`);
+  if(bar) bar.style.width=pct+'%';
+  if(count) count.textContent=`${done}/${w.tasks.length}`;
+}
+
+function renderStats(){
+  const total=WEEKS.reduce((a,w)=>a+w.tasks.length,0);
+  const done=Object.values(checks).filter(Boolean).length;
+  const pct=Math.round(done/total*100);
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-left').textContent=total-done;
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('mp-txt').textContent=`${done} / ${total} tasks`;
+  document.getElementById('mp-bar').style.width=pct+'%';
+}
+
+function renderChecklist(){
+  const el=document.getElementById('panel-checklist');
+  el.innerHTML='';
+  WEEKS.forEach((w,wi)=>{
+    const done=w.tasks.filter((_,ti)=>checks[`${wi}-${ti}`]).length;
+    const pct=Math.round(done/w.tasks.length*100);
+    const block=document.createElement('div');
+    block.className='week-block';
+    block.innerHTML=`
+      <div class="wk-progress"><div class="wk-bar" id="wkbar-${wi}" style="width:${pct}%"></div></div>
+      <div class="week-head">
+        <span class="week-num">${w.num}</span>
+        <span class="week-name">${w.name}</span>
+        <span class="week-tag">${w.tag}</span>
+        <span class="week-count" id="wkcount-${wi}">${done}/${w.tasks.length}</span>
       </div>
-      <p class="card-desc">${esc(p.desc)}</p>
-      <div class="card-tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
-      ${p.hasPlan ? `<div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div><p class="progress-label">${done}/${total} tasks · ${pct}%</p>` : ''}
-    </div>`;
-  }).join('');
-}
-
-function showDetail(id) {
-  const p = projects.find(x => x.id === id);
-  if (!p) return;
-  currentProject = id;
-  document.getElementById('project-list-view').style.display = 'none';
-  const dv = document.getElementById('project-detail-view');
-  dv.style.display = 'block';
-  renderDetail(p, dv);
-}
-
-function renderDetail(p, dv) {
-  const done = getDone(), total = getTotal(), pct = Math.round(done / total * 100);
-  let html = `<button class="detail-back" onclick="backToList()"><i class="ti ti-arrow-left"></i> All projects</button>
-  <div class="detail-card">
-    <div class="detail-header">
-      <span class="detail-title">${esc(p.name)}</span>
-      ${statusBadge(p.status)}
-    </div>
-    <p class="detail-desc">${esc(p.desc)}</p>
-    <div class="card-tags" style="margin-bottom:1rem;">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>
-    <div class="big-progress">
-      <div class="big-progress-bar"><div class="big-progress-fill" style="width:${pct}%"></div></div>
-      <span class="big-progress-label">${done}/${total} tasks · ${pct}%</span>
-    </div>`;
-
-  Object.entries(SIXDOF_TASKS).forEach(([week, tasks]) => {
-    const wDone = tasks.filter(t => taskState[t.id]).length;
-    const wPct = Math.round(wDone / tasks.length * 100);
-    html += `<div class="week-block">
-      <div class="week-label">${week}<div class="week-sub-bar"><div class="week-sub-fill" style="width:${wPct}%"></div></div></div>`;
-    tasks.forEach(t => {
-      html += `<div class="task-item ${taskState[t.id] ? 'checked' : ''}" id="row-${t.id}">
-        <input type="checkbox" ${taskState[t.id] ? 'checked' : ''} onchange="toggleTask('${t.id}')" />
-        <span>${esc(t.text)}</span>
+      <div class="task-list">
+        ${w.tasks.map((t,ti)=>`
+          <div class="task-row" data-id="${wi}-${ti}" onclick="toggle('${wi}-${ti}')">
+            <div class="cb${checks[`${wi}-${ti}`]?' on':''}"></div>
+            <span class="task-txt${checks[`${wi}-${ti}`]?' done':''}">${t}</span>
+          </div>`).join('')}
       </div>`;
-    });
-    html += '</div>';
+    el.appendChild(block);
   });
-
-  html += `<div class="resources-section"><h3>Resources</h3>`;
-  RESOURCES.forEach(r => { html += `<div class="resource-item"><i class="ti ti-book-2"></i><span>${esc(r)}</span></div>`; });
-  html += `</div></div>`;
-  dv.innerHTML = html;
 }
 
-function toggleTask(id) {
-  taskState[id] = !taskState[id];
-  persist();
-  const p = projects.find(x => x.id === currentProject);
-  renderDetail(p, document.getElementById('project-detail-view'));
-  renderProjects();
+function show(name,btn){
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-'+name).classList.add('active');
 }
 
-function backToList() {
-  currentProject = null;
-  document.getElementById('project-detail-view').style.display = 'none';
-  document.getElementById('project-list-view').style.display = 'block';
-  renderProjects();
+// notes
+let notes=JSON.parse(localStorage.getItem('6dof-notes-v3')||'[]');
+let openNotes=new Set();
+
+function saveNotes(){localStorage.setItem('6dof-notes-v3',JSON.stringify(notes))}
+
+function addNote(){
+  const titleEl=document.getElementById('note-title-input');
+  const bodyEl=document.getElementById('note-input');
+  const title=titleEl.value.trim();
+  const body=bodyEl.value.trim();
+  if(!title&&!body)return;
+  const n={
+    id:Date.now(),
+    title:title||'Untitled',
+    body:body,
+    ts:new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
+  };
+  notes.unshift(n);
+  openNotes.add(n.id);
+  saveNotes();
+  titleEl.value='';bodyEl.value='';
+  titleEl.focus();
+  renderNotes();
 }
 
-function renderNotes() {
-  const list = document.getElementById('notes-list');
-  if (!notes.length) {
-    list.innerHTML = '<p class="empty"><i class="ti ti-notebook"></i>No notes yet — jot something down!</p>';
+function deleteNote(id,e){
+  e.stopPropagation();
+  notes=notes.filter(n=>n.id!==id);
+  openNotes.delete(id);
+  saveNotes();
+  renderNotes();
+}
+
+function toggleNote(id){
+  if(openNotes.has(id))openNotes.delete(id);
+  else openNotes.add(id);
+  const card=document.querySelector(`.note-card[data-id="${id}"]`);
+  if(card)card.classList.toggle('open',openNotes.has(id));
+}
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+function highlight(text,q){
+  if(!q)return esc(text);
+  const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return esc(text).replace(re,'<mark>$1</mark>').replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\/mark&gt;/g,'</mark>');
+}
+
+function renderNotes(){
+  const q=(document.getElementById('note-search')?.value||'').trim().toLowerCase();
+  const el=document.getElementById('notes-list');
+  const countEl=document.getElementById('search-count');
+  const filtered=q?notes.filter(n=>n.title.toLowerCase().includes(q)):notes;
+  if(countEl)countEl.textContent=q?`${filtered.length} result${filtered.length!==1?'s':''}`:notes.length?`${notes.length} note${notes.length!==1?'s':''}`:'' ;
+  if(!filtered.length){
+    el.innerHTML=`<div class="notes-empty">${q?'No notes match "'+esc(q)+'"':'No notes yet — add one above'}</div>`;
     return;
   }
-  list.innerHTML = notes.map(n => `<div class="note-card">
-    <div class="note-meta">
-      <span class="note-title">${esc(n.title)}</span>
-      <span class="note-date">${n.date}</span>
-    </div>
-    <p class="note-body">${esc(n.body)}</p>
-  </div>`).join('');
+  el.innerHTML=filtered.map(n=>`
+    <div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}">
+      <div class="note-card-head" onclick="toggleNote(${n.id})">
+        <span class="note-title">${highlight(n.title,q)}</span>
+        <span class="note-ts">${n.ts}</span>
+        <button class="btn-del" onclick="deleteNote(${n.id},event)" title="Delete">✕</button>
+      </div>
+      ${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}
+    </div>`).join('');
 }
 
-function switchTab(tab) {
-  document.getElementById('tab-projects').classList.toggle('active', tab === 'projects');
-  document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
-  document.getElementById('projects-section').classList.toggle('active', tab === 'projects');
-  document.getElementById('notes-section').classList.toggle('active', tab === 'notes');
-}
+document.getElementById('note-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&(e.metaKey||e.ctrlKey))addNote();
+});
+document.getElementById('note-title-input').addEventListener('keydown',function(e){
+  if(e.key==='Enter'){e.preventDefault();document.getElementById('note-input').focus()}
+});
 
-let editingProjectId = null;
-
-function openProjectModal(id) {
-  editingProjectId = id || null;
-  const p = id ? projects.find(x => x.id === id) : null;
-  document.getElementById('modal-title').textContent = p ? 'Edit project' : 'New project';
-  document.getElementById('p-name').value = p ? p.name : '';
-  document.getElementById('p-desc').value = p ? p.desc : '';
-  document.getElementById('p-status').value = p ? p.status : 'idea';
-  document.getElementById('p-tags').value = p ? p.tags.join(', ') : '';
-  document.getElementById('project-modal').classList.add('open');
-}
-
-function openNoteModal() { document.getElementById('note-modal').classList.add('open'); }
-function closeModals() { document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open')); }
-
-function saveProject() {
-  const name = document.getElementById('p-name').value.trim();
-  if (!name) return;
-  const tags = document.getElementById('p-tags').value.split(',').map(t => t.trim()).filter(Boolean);
-  const data = { name, desc: document.getElementById('p-desc').value.trim() || 'No description.', status: document.getElementById('p-status').value, tags };
-  if (editingProjectId) {
-    const idx = projects.findIndex(x => x.id === editingProjectId);
-    if (idx > -1) projects[idx] = { ...projects[idx], ...data };
-  } else {
-    projects.unshift({ id: 'p' + Date.now(), ...data, featured: false, hasPlan: false, createdAt: Date.now() });
-  }
-  persist();
-  document.getElementById('p-name').value = ''; document.getElementById('p-desc').value = ''; document.getElementById('p-tags').value = '';
-  closeModals(); renderProjects();
-}
-
-function saveNote() {
-  const title = document.getElementById('n-title').value.trim();
-  if (!title) return;
-  const now = new Date();
-  notes.unshift({ id: Date.now(), title, date: now.toLocaleString('default', { month: 'short', year: 'numeric' }), body: document.getElementById('n-body').value.trim() });
-  persist();
-  document.getElementById('n-title').value = ''; document.getElementById('n-body').value = '';
-  closeModals(); renderNotes();
-}
-
-function esc(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', e => { if (e.target === m) closeModals(); }));
-
-renderProjects();
 renderNotes();
+
+renderChecklist();
+renderStats();
 </script>
 </body>
 </html>
