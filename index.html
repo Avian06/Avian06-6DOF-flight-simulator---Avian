@@ -125,6 +125,20 @@ nav{
 .note-card.open .note-card-head{border-bottom-color:var(--edge2)}
 .search-count{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.08em;flex-shrink:0}
 .notes-empty{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:0.08em;padding:20px 0;text-align:center;border:1px dashed var(--edge)}
+.img-upload-row{display:flex;align-items:center;gap:10px;padding:8px 0 4px;border-top:1px solid var(--edge);margin-top:6px}
+.img-upload-label{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);cursor:pointer;border:1px dashed var(--edge2);padding:6px 12px;transition:color 0.15s,border-color 0.15s;flex-shrink:0}
+.img-upload-label:hover{color:var(--horizon);border-color:var(--horizon)}
+.img-upload-label input{display:none}
+.img-preview{max-height:36px;max-width:80px;object-fit:cover;border:1px solid var(--edge2);opacity:0.8}
+.img-clear{background:none;border:none;color:var(--dim);cursor:pointer;font-size:12px;padding:2px 4px;transition:color 0.15s}
+.img-clear:hover{color:#E05555}
+.img-filename{font-family:var(--mono);font-size:10px;color:var(--mid);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.note-card-img{width:100%;max-height:320px;object-fit:contain;display:block;border-bottom:1px solid var(--edge);background:var(--deep);cursor:zoom-in}
+.lightbox{position:fixed;inset:0;z-index:999;background:rgba(4,8,15,0.95);display:flex;align-items:center;justify-content:center;cursor:zoom-out;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.lightbox.open{opacity:1;pointer-events:all}
+.lightbox img{max-width:92vw;max-height:92vh;object-fit:contain;border:1px solid var(--edge2);box-shadow:0 0 60px rgba(0,212,255,0.08)}
+.lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--dim);font-size:22px;cursor:pointer;font-family:var(--mono);transition:color 0.15s;line-height:1}
+.lightbox-close:hover{color:var(--bright)}
 .cat-pick{display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 2px}
 .cat-pill{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;color:var(--dim);transition:all 0.15s}
 .cat-pill:hover{color:var(--text)}
@@ -250,6 +264,15 @@ nav{
     <div class="note-compose">
       <input class="note-heading-input" id="note-title-input" type="text" placeholder="Heading — e.g. RK4 vs Euler stability" maxlength="80">
       <textarea class="note-body-input" id="note-input" placeholder="Note body — question, idea, formula, code snippet..." rows="3"></textarea>
+      <div class="img-upload-row">
+        <label class="img-upload-label">
+          + Attach image
+          <input type="file" id="img-input" accept="image/*" onchange="handleImgUpload(event)">
+        </label>
+        <img id="img-preview" class="img-preview" style="display:none">
+        <span class="img-filename" id="img-filename"></span>
+        <button class="img-clear" id="img-clear" style="display:none" onclick="clearImg()">✕</button>
+      </div>
       <div class="compose-footer" style="justify-content:space-between;align-items:center">
         <div class="cat-pick" id="cat-pick">
           <button class="cat-pill sel" data-cat="general" onclick="selectCat('general')">General</button>
@@ -336,7 +359,23 @@ nav{
 
 </main>
 
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="expanded note image">
+</div>
+
 <script>
+function openLightbox(src){
+  document.getElementById('lightbox-img').src=src;
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeLightbox()});
+
 // ── STARFIELD ──
 (function(){
   const c=document.getElementById('stars');
@@ -488,16 +527,41 @@ let notes=JSON.parse(localStorage.getItem('6dof-notes-v4')||'[]');
 let openNotes=new Set();
 let activeCat='general';
 let activeFilter='all';
+let pendingImg=null;
 function saveNotes(){localStorage.setItem('6dof-notes-v4',JSON.stringify(notes))}
 function selectCat(cat){activeCat=cat;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.toggle('sel',p.dataset.cat===cat))}
 function setFilter(f,btn){activeFilter=f;document.querySelectorAll('.cf-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));renderNotes()}
+
+function handleImgUpload(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    pendingImg=ev.target.result;
+    const prev=document.getElementById('img-preview');
+    prev.src=pendingImg;prev.style.display='block';
+    document.getElementById('img-filename').textContent=file.name;
+    document.getElementById('img-clear').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearImg(){
+  pendingImg=null;
+  document.getElementById('img-preview').style.display='none';
+  document.getElementById('img-preview').src='';
+  document.getElementById('img-filename').textContent='';
+  document.getElementById('img-clear').style.display='none';
+  document.getElementById('img-input').value='';
+}
+
 function addNote(){
   const titleEl=document.getElementById('note-title-input');
   const bodyEl=document.getElementById('note-input');
   const title=titleEl.value.trim();const body=bodyEl.value.trim();
-  if(!title&&!body)return;
-  const n={id:Date.now(),title:title||'Untitled',body:body,cat:activeCat,ts:new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
-  notes.unshift(n);openNotes.add(n.id);saveNotes();titleEl.value='';bodyEl.value='';titleEl.focus();renderNotes();
+  if(!title&&!body&&!pendingImg)return;
+  const n={id:Date.now(),title:title||'Untitled',body:body,cat:activeCat,img:pendingImg||null,ts:new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+  notes.unshift(n);openNotes.add(n.id);saveNotes();titleEl.value='';bodyEl.value='';clearImg();titleEl.focus();renderNotes();
 }
 function deleteNote(id,e){e.stopPropagation();notes=notes.filter(n=>n.id!==id);openNotes.delete(id);saveNotes();renderNotes()}
 function toggleNote(id){if(openNotes.has(id))openNotes.delete(id);else openNotes.add(id);const card=document.querySelector(`.note-card[data-id="${id}"]`);if(card)card.classList.toggle('open',openNotes.has(id))}
@@ -513,7 +577,7 @@ function renderNotes(){
   const total=activeFilter==='all'?notes.length:notes.filter(n=>(n.cat||'general')===activeFilter).length;
   if(countEl)countEl.textContent=q?`${filtered.length} result${filtered.length!==1?'s':''}`:total?`${total} note${total!==1?'s':''}`:'';
   if(!filtered.length){el.innerHTML=`<div class="notes-empty">${q?'No notes match "'+esc(q)+'"':'No notes yet — add one above'}</div>`;return}
-  el.innerHTML=filtered.map(n=>{const cat=n.cat||'general';return`<div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}"><div class="note-card-head" onclick="toggleNote(${n.id})"><span class="note-badge ${cat}">${cat}</span><span class="note-title">${highlight(n.title,q)}</span><span class="note-ts">${n.ts}</span><button class="btn-del" onclick="deleteNote(${n.id},event)" title="Delete">✕</button></div>${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}</div>`}).join('');
+  el.innerHTML=filtered.map(n=>{const cat=n.cat||'general';return`<div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}"><div class="note-card-head" onclick="toggleNote(${n.id})"><span class="note-badge ${cat}">${cat}</span><span class="note-title">${highlight(n.title,q)}</span>${n.img?'<span style="font-family:var(--mono);font-size:9px;color:var(--horizon);margin-left:4px">📷</span>':''}<span class="note-ts">${n.ts}</span><button class="btn-del" onclick="deleteNote(${n.id},event)" title="Delete">✕</button></div>${n.img?`<img class="note-card-img" src="${n.img}" alt="note image" onclick="event.stopPropagation();openLightbox('${n.img.replace(/'/g,"\\'")}')">`:''} ${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}</div>`}).join('');
 }
 
 document.getElementById('note-input').addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.metaKey||e.ctrlKey))addNote()});
