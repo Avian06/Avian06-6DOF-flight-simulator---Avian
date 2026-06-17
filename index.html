@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6DOF // Personal Build Log</title>
+<title>6DOF // Tullamarine Circuit Build Log</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -27,10 +27,8 @@
 html{scroll-behavior:smooth}
 body{background:var(--sky);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.6;min-height:100vh}
 
-/* ── STARFIELD ── */
 #stars{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.5}
 
-/* ── NAV ── */
 nav{
   position:sticky;top:0;z-index:50;
   display:flex;align-items:center;justify-content:space-between;
@@ -51,74 +49,47 @@ nav{
 .nav-tab:hover{color:var(--text);border-color:var(--edge2)}
 .nav-tab.active{color:var(--horizon);border-color:var(--horizon)}
 
-/* ── LAYOUT ── */
 .main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:36px 32px 80px}
 
-/* ── HUD HEADER ── */
 .hud{
   display:flex;align-items:flex-start;justify-content:space-between;
   margin-bottom:32px;gap:24px;flex-wrap:wrap;
 }
-.hud-title{
-  font-size:clamp(26px,4vw,38px);font-weight:600;color:var(--bright);
-  letter-spacing:-0.02em;line-height:1.1;
-}
+.hud-title{font-size:clamp(24px,4vw,36px);font-weight:600;color:var(--bright);letter-spacing:-0.02em;line-height:1.1}
 .hud-title span{color:var(--horizon)}
 .hud-sub{font-size:13px;color:var(--dim);font-family:var(--mono);margin-top:6px;letter-spacing:0.06em}
+.hud-meta{font-size:12px;color:var(--mid);font-family:var(--mono);margin-top:4px;letter-spacing:0.04em}
 .hud-stats{display:flex;gap:2px;flex-shrink:0}
-.hstat{
-  background:var(--panel);border:1px solid var(--edge);
-  padding:14px 20px;text-align:center;min-width:72px;
-}
+.hstat{background:var(--panel);border:1px solid var(--edge);padding:14px 20px;text-align:center;min-width:72px}
 .hstat-n{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--horizon);line-height:1;display:block}
 .hstat-l{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;margin-top:4px;display:block}
 
-/* ── PROGRESS BAR ── */
 .master-progress{margin-bottom:36px}
 .mp-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
 .mp-track{height:2px;background:var(--edge2);position:relative}
 .mp-fill{height:2px;background:var(--horizon);transition:width 0.4s ease;position:relative}
 .mp-fill::after{content:'';position:absolute;right:-1px;top:-3px;width:8px;height:8px;border-radius:50%;background:var(--horizon);box-shadow:0 0 8px var(--horizon)}
 
-/* ── PANELS ── */
 .panel{display:none}.panel.active{display:block}
 
-/* ── WEEK BLOCKS ── */
-.week-block{
-  border:1px solid var(--edge);background:var(--panel);
-  margin-bottom:12px;transition:border-color 0.2s;
-}
+.week-block{border:1px solid var(--edge);background:var(--panel);margin-bottom:12px;transition:border-color 0.2s}
 .week-block:hover{border-color:var(--edge2)}
-.week-head{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 18px;cursor:pointer;user-select:none;
-}
-.week-num{
-  font-family:var(--mono);font-size:11px;letter-spacing:0.12em;
-  color:var(--horizon);min-width:52px;
-}
+.week-head{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer;user-select:none}
+.week-num{font-family:var(--mono);font-size:11px;letter-spacing:0.12em;color:var(--horizon);min-width:52px}
 .week-name{font-size:14px;font-weight:500;color:var(--bright);flex:1}
 .week-tag{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase;border:1px solid var(--edge2);padding:3px 8px}
 .week-count{font-family:var(--mono);font-size:11px;color:var(--dim)}
 .wk-progress{height:1px;background:var(--edge2)}
 .wk-bar{height:1px;background:var(--horizon);transition:width 0.3s}
 .task-list{padding:6px 0 10px}
-.task-row{
-  display:flex;align-items:flex-start;gap:12px;
-  padding:8px 18px;cursor:pointer;transition:background 0.12s;
-}
+.task-row{display:flex;align-items:flex-start;gap:12px;padding:8px 18px;cursor:pointer;transition:background 0.12s}
 .task-row:hover{background:rgba(255,255,255,0.03)}
-.cb{
-  width:14px;height:14px;border:1px solid var(--dim);
-  flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;
-  transition:border-color 0.15s,background 0.15s;
-}
+.cb{width:14px;height:14px;border:1px solid var(--dim);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s,background 0.15s}
 .cb.on{border-color:var(--success);background:rgba(61,214,140,0.12)}
 .cb.on::after{content:'✓';font-size:9px;color:var(--success);font-family:var(--mono)}
 .task-txt{font-size:13px;color:var(--text);line-height:1.5}
 .task-txt.done{color:var(--dim);text-decoration:line-through}
 
-/* ── NOTES ── */
 .notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
 @media(max-width:600px){.notes-grid{grid-template-columns:1fr}}
 .formula-card{background:var(--panel);border:1px solid var(--edge);padding:16px 18px}
@@ -126,56 +97,28 @@ nav{
 .fc-eq{font-family:var(--mono);font-size:13px;color:var(--warm);line-height:1.8}
 .notes-section-label{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;color:var(--dim);text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--edge)}
 .notes-toolbar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
-.note-search{
-  flex:1;height:36px;
-  background:var(--panel);border:1px solid var(--edge);
-  color:var(--text);font-family:var(--mono);font-size:12px;letter-spacing:0.06em;
-  padding:0 12px;transition:border-color 0.15s;
-}
+.note-search{flex:1;height:36px;background:var(--panel);border:1px solid var(--edge);color:var(--text);font-family:var(--mono);font-size:12px;letter-spacing:0.06em;padding:0 12px;transition:border-color 0.15s}
 .note-search:focus{outline:none;border-color:var(--horizon)}
 .note-search::placeholder{color:var(--dim)}
 .note-compose{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;background:var(--panel);border:1px solid var(--edge);padding:14px 16px}
 .note-compose:focus-within{border-color:var(--edge2)}
-.note-heading-input{
-  width:100%;background:none;border:none;border-bottom:1px solid var(--edge);
-  color:var(--bright);font-family:var(--sans);font-size:15px;font-weight:500;
-  padding:0 0 10px 0;margin-bottom:2px;transition:border-color 0.15s;
-}
+.note-heading-input{width:100%;background:none;border:none;border-bottom:1px solid var(--edge);color:var(--bright);font-family:var(--sans);font-size:15px;font-weight:500;padding:0 0 10px 0;margin-bottom:2px;transition:border-color 0.15s}
 .note-heading-input:focus{outline:none;border-bottom-color:var(--horizon)}
 .note-heading-input::placeholder{color:var(--dim)}
-.note-body-input{
-  width:100%;min-height:72px;background:none;border:none;
-  color:var(--text);font-family:var(--sans);font-size:14px;
-  line-height:1.6;padding:8px 0 0;resize:none;
-}
+.note-body-input{width:100%;min-height:72px;background:none;border:none;color:var(--text);font-family:var(--sans);font-size:14px;line-height:1.6;padding:8px 0 0;resize:none}
 .note-body-input:focus{outline:none}
 .note-body-input::placeholder{color:var(--dim)}
 .compose-footer{display:flex;justify-content:flex-end}
-.btn-add{
-  font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;
-  background:none;border:1px solid var(--horizon);color:var(--horizon);
-  padding:7px 16px;cursor:pointer;transition:background 0.15s,color 0.15s;
-}
+.btn-add{font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;background:none;border:1px solid var(--horizon);color:var(--horizon);padding:7px 16px;cursor:pointer;transition:background 0.15s,color 0.15s}
 .btn-add:hover{background:var(--horizon);color:var(--sky)}
 .notes-list{display:flex;flex-direction:column;gap:8px}
-.note-card{
-  background:var(--panel);border:1px solid var(--edge);
-  padding:0;overflow:hidden;transition:border-color 0.15s;
-}
+.note-card{background:var(--panel);border:1px solid var(--edge);padding:0;overflow:hidden;transition:border-color 0.15s}
 .note-card:hover{border-color:var(--edge2)}
-.note-card-head{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 16px;border-bottom:1px solid var(--edge);
-  cursor:pointer;user-select:none;
-}
+.note-card-head{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--edge);cursor:pointer;user-select:none}
 .note-title{font-size:14px;font-weight:500;color:var(--bright);flex:1}
 .note-title mark{background:rgba(0,212,255,0.2);color:var(--horizon);border-radius:2px}
 .note-ts{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:0.06em;flex-shrink:0}
-.btn-del{
-  background:none;border:none;cursor:pointer;
-  color:var(--dim);font-size:13px;padding:2px 4px;flex-shrink:0;
-  line-height:1;transition:color 0.15s;
-}
+.btn-del{background:none;border:none;cursor:pointer;color:var(--dim);font-size:13px;padding:2px 4px;flex-shrink:0;line-height:1;transition:color 0.15s}
 .btn-del:hover{color:#E05555}
 .note-card-body{padding:12px 16px 14px;font-size:14px;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word;display:none}
 .note-card.open .note-card-body{display:block}
@@ -183,11 +126,7 @@ nav{
 .search-count{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:0.08em;flex-shrink:0}
 .notes-empty{font-family:var(--mono);font-size:11px;color:var(--dim);letter-spacing:0.08em;padding:20px 0;text-align:center;border:1px dashed var(--edge)}
 .cat-pick{display:flex;gap:6px;flex-wrap:wrap;padding:6px 0 2px}
-.cat-pill{
-  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
-  padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;
-  color:var(--dim);transition:all 0.15s;
-}
+.cat-pill{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;color:var(--dim);transition:all 0.15s}
 .cat-pill:hover{color:var(--text)}
 .cat-pill.sel{color:var(--sky);border-color:transparent}
 .cat-pill[data-cat="python"].sel{background:#3B82F6}
@@ -195,11 +134,7 @@ nav{
 .cat-pill[data-cat="physics"].sel{background:#F97316}
 .cat-pill[data-cat="general"].sel{background:var(--dim)}
 .cat-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.cf-btn{
-  font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
-  padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;
-  color:var(--dim);transition:all 0.15s;
-}
+.cf-btn{font-family:var(--mono);font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:5px 12px;cursor:pointer;border:1px solid var(--edge2);background:none;color:var(--dim);transition:all 0.15s}
 .cf-btn:hover{color:var(--text)}
 .cf-btn.active{color:var(--sky);border-color:transparent}
 .cf-btn[data-f="all"].active{background:var(--edge2);color:var(--text)}
@@ -207,16 +142,12 @@ nav{
 .cf-btn[data-f="math"].active{background:#A855F7}
 .cf-btn[data-f="physics"].active{background:#F97316}
 .cf-btn[data-f="general"].active{background:var(--dim)}
-.note-badge{
-  font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;
-  padding:2px 7px;flex-shrink:0;border:none;
-}
+.note-badge{font-family:var(--mono);font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:2px 7px;flex-shrink:0;border:none}
 .note-badge.python{background:rgba(59,130,246,0.15);color:#60A5FA}
 .note-badge.math{background:rgba(168,85,247,0.15);color:#C084FC}
 .note-badge.physics{background:rgba(249,115,22,0.15);color:#FB923C}
 .note-badge.general{background:var(--edge2);color:var(--mid)}
 
-/* ── REFS ── */
 .ref-section-title{font-family:var(--mono);font-size:9px;letter-spacing:0.16em;color:var(--dim);text-transform:uppercase;margin:24px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--edge)}
 .ref-section-title:first-child{margin-top:0}
 .ref-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--edge)}
@@ -226,12 +157,20 @@ nav{
 .ref-link:hover{color:var(--horizon)}
 .ref-link::after{content:' ↗';font-size:11px;color:var(--dim)}
 
-/* ── RESPONSIVE ── */
+.circuit-banner{
+  background:var(--panel);border:1px solid var(--edge);
+  padding:14px 18px;margin-bottom:24px;
+  display:flex;gap:24px;flex-wrap:wrap;align-items:center;
+}
+.circuit-leg{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:80px}
+.circuit-leg-name{font-family:var(--mono);font-size:9px;letter-spacing:0.14em;color:var(--dim);text-transform:uppercase}
+.circuit-leg-val{font-family:var(--mono);font-size:12px;color:var(--horizon)}
+.circuit-divider{color:var(--edge2);font-size:18px;align-self:center}
+
 @media(max-width:640px){
   nav{padding:12px 18px}
   .main{padding:24px 18px 60px}
   .hud-stats{display:none}
-  .nav-tab span{display:none}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -241,7 +180,7 @@ nav{
 <canvas id="stars"></canvas>
 
 <nav>
-  <div class="nav-id">6DOF // BUILD LOG</div>
+  <div class="nav-id">6DOF // TULLAMARINE CIRCUIT</div>
   <div class="nav-right">
     <button class="nav-tab active" onclick="show('checklist',this)">Checklist</button>
     <button class="nav-tab" onclick="show('notes',this)">Notes</button>
@@ -253,23 +192,37 @@ nav{
 
   <div class="hud">
     <div>
-      <h1 class="hud-title">6<span>DOF</span> Flight Sim</h1>
-      <p class="hud-sub">PERSONAL BUILD LOG // 4-WEEK PROJECT</p>
+      <h1 class="hud-title">Cessna 172<br><span>Tullamarine Circuit</span></h1>
+      <p class="hud-sub">6DOF FLIGHT SIM // 6-WEEK BUILD</p>
+      <p class="hud-meta">RWY 16 DEPARTURE → LEFT CIRCUIT → FULL STOP // GOOGLE EARTH OUTPUT</p>
     </div>
     <div class="hud-stats">
       <div class="hstat"><span class="hstat-n" id="s-done">0</span><span class="hstat-l">Done</span></div>
-      <div class="hstat"><span class="hstat-n" id="s-left">20</span><span class="hstat-l">Left</span></div>
+      <div class="hstat"><span class="hstat-n" id="s-left">0</span><span class="hstat-l">Left</span></div>
       <div class="hstat"><span class="hstat-n" id="s-pct">0%</span><span class="hstat-l">Complete</span></div>
     </div>
   </div>
 
   <div class="master-progress">
-    <div class="mp-label"><span>OVERALL PROGRESS</span><span id="mp-txt">0 / 20 tasks</span></div>
+    <div class="mp-label"><span>OVERALL PROGRESS</span><span id="mp-txt">0 / 0 tasks</span></div>
     <div class="mp-track"><div class="mp-fill" id="mp-bar" style="width:0%"></div></div>
   </div>
 
   <!-- CHECKLIST -->
-  <div class="panel active" id="panel-checklist"></div>
+  <div class="panel active" id="panel-checklist">
+    <div class="circuit-banner">
+      <div class="circuit-leg"><span class="circuit-leg-name">Takeoff</span><span class="circuit-leg-val">RWY 16</span></div>
+      <span class="circuit-divider">→</span>
+      <div class="circuit-leg"><span class="circuit-leg-name">Crosswind</span><span class="circuit-leg-val">Left turn</span></div>
+      <span class="circuit-divider">→</span>
+      <div class="circuit-leg"><span class="circuit-leg-name">Downwind</span><span class="circuit-leg-val">Over Keilor</span></div>
+      <span class="circuit-divider">→</span>
+      <div class="circuit-leg"><span class="circuit-leg-name">Base</span><span class="circuit-leg-val">Descend</span></div>
+      <span class="circuit-divider">→</span>
+      <div class="circuit-leg"><span class="circuit-leg-name">Final</span><span class="circuit-leg-val">RWY 16</span></div>
+    </div>
+    <div id="panel-checklist-inner"></div>
+  </div>
 
   <!-- NOTES -->
   <div class="panel" id="panel-notes">
@@ -287,8 +240,8 @@ nav{
         <div class="fc-eq">pos:   x, y, z<br>vel:   u, v, w<br>ang:   φ, θ, ψ<br>rate:  p, q, r</div>
       </div>
       <div class="formula-card">
-        <div class="fc-label">RK4 integration</div>
-        <div class="fc-eq">k₁ = f(t, y)·h<br>k₂ = f(t+h/2, y+k₁/2)·h<br>k₃ = f(t+h/2, y+k₂/2)·h<br>k₄ = f(t+h, y+k₃)·h</div>
+        <div class="fc-label">KML coordinate format</div>
+        <div class="fc-eq">lon, lat, alt (metres)<br>174.7633, -37.6690, 300<br>heading = yaw (°true)<br>tilt = 90 − pitch</div>
       </div>
     </div>
 
@@ -326,7 +279,16 @@ nav{
 
   <!-- REFS -->
   <div class="panel" id="panel-refs">
-    <div class="ref-section-title">Books</div>
+    <div class="ref-section-title">Tullamarine / Airport Data</div>
+    <div class="ref-row">
+      <span class="ref-tag">charts</span>
+      <a class="ref-link" href="https://www.airservicesaustralia.com/aip/current/dap/AerodromesAL.htm" target="_blank">Airservices Australia — YMML approach & circuit charts</a>
+    </div>
+    <div class="ref-row">
+      <span class="ref-tag">coords</span>
+      <a class="ref-link" href="https://www.world-airport-codes.com/australia/melbourne-airport-1068.html" target="_blank">YMML runway coordinates and elevation data</a>
+    </div>
+    <div class="ref-section-title">Flight Dynamics</div>
     <div class="ref-row">
       <span class="ref-tag">textbook</span>
       <a class="ref-link" href="https://www.sciencedirect.com/book/9780080982427" target="_blank">Flight Dynamics Principles — Michael Cook</a>
@@ -335,16 +297,29 @@ nav{
       <span class="ref-tag">textbook</span>
       <a class="ref-link" href="https://www.wiley.com/en-us/Aircraft+Control+and+Simulation-p-9781118870983" target="_blank">Aircraft Control & Simulation — Stevens & Lewis</a>
     </div>
-    <div class="ref-section-title">Data &amp; Reports</div>
-    <div class="ref-row">
-      <span class="ref-tag">dataset</span>
-      <a class="ref-link" href="https://m-selig.ae.illinois.edu/ads/coord_database.html" target="_blank">UIUC Airfoil Database — Cl/Cd curves for real airfoils</a>
-    </div>
     <div class="ref-row">
       <span class="ref-tag">NASA</span>
       <a class="ref-link" href="https://ntrs.nasa.gov/citations/19770024290" target="_blank">NASA TN D-8057 — Equations of motion derivation</a>
     </div>
-    <div class="ref-section-title">Python Docs</div>
+    <div class="ref-section-title">Cessna 172 Data</div>
+    <div class="ref-row">
+      <span class="ref-tag">dataset</span>
+      <a class="ref-link" href="https://m-selig.ae.illinois.edu/ads/coord_database.html" target="_blank">UIUC Airfoil Database — NACA 2412 Cl/Cd curves</a>
+    </div>
+    <div class="ref-row">
+      <span class="ref-tag">specs</span>
+      <a class="ref-link" href="https://www.cessna.com/single-engine/skyhawk" target="_blank">Cessna 172 Skyhawk — performance specs</a>
+    </div>
+    <div class="ref-section-title">Google Earth / KML</div>
+    <div class="ref-row">
+      <span class="ref-tag">docs</span>
+      <a class="ref-link" href="https://developers.google.com/kml/documentation/kmlreference" target="_blank">KML Reference — Google Developers</a>
+    </div>
+    <div class="ref-row">
+      <span class="ref-tag">docs</span>
+      <a class="ref-link" href="https://developers.google.com/kml/documentation/cameras" target="_blank">KML Camera & orientation — heading, tilt, roll</a>
+    </div>
+    <div class="ref-section-title">Python</div>
     <div class="ref-row">
       <span class="ref-tag">docs</span>
       <a class="ref-link" href="https://numpy.org/doc/" target="_blank">NumPy — arrays and linear algebra</a>
@@ -355,12 +330,7 @@ nav{
     </div>
     <div class="ref-row">
       <span class="ref-tag">docs</span>
-      <a class="ref-link" href="https://matplotlib.org/stable/users/index.html" target="_blank">Matplotlib — plotting and 3D visualisation</a>
-    </div>
-    <div class="ref-section-title">Video</div>
-    <div class="ref-row">
-      <span class="ref-tag">video</span>
-      <a class="ref-link" href="https://www.youtube.com/results?search_query=6DOF+flight+simulation+python" target="_blank">YouTube: 6DOF flight simulation Python</a>
+      <a class="ref-link" href="https://matplotlib.org/stable/users/index.html" target="_blank">Matplotlib — sanity-check plots during build</a>
     </div>
   </div>
 
@@ -373,79 +343,89 @@ nav{
   const ctx=c.getContext('2d');
   let W,H,stars=[];
   function init(){
-    W=c.width=window.innerWidth;
-    H=c.height=window.innerHeight;
-    stars=Array.from({length:180},()=>({
-      x:Math.random()*W, y:Math.random()*H,
-      r:Math.random()*1.1+0.2,
-      a:Math.random()*0.45+0.05
-    }));
+    W=c.width=window.innerWidth;H=c.height=window.innerHeight;
+    stars=Array.from({length:180},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.1+0.2,a:Math.random()*0.45+0.05}));
     draw();
   }
-  function draw(){
-    ctx.clearRect(0,0,W,H);
-    stars.forEach(s=>{
-      ctx.beginPath();
-      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
-      ctx.fillStyle=`rgba(180,210,245,${s.a})`;
-      ctx.fill();
-    });
-  }
-  window.addEventListener('resize',init);
-  init();
+  function draw(){ctx.clearRect(0,0,W,H);stars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(180,210,245,${s.a})`;ctx.fill()});}
+  window.addEventListener('resize',init);init();
 })();
 
-// ── DATA ──
+// ── WEEK DATA ──
 const WEEKS=[
-  {num:'WK-01',name:'Foundations',tag:'Python basics',tasks:[
-    'Install NumPy, SciPy, Matplotlib',
-    'Understand the 12-element state vector',
-    'Implement gravity + simple linear drag',
-    'Euler integration loop',
-    'Plot a basic trajectory (cannonball arc)'
-  ]},
-  {num:'WK-02',name:'Aerodynamics',tag:'Physics',tasks:[
-    'Look up NACA 2412 Cl/Cd data from UIUC database',
-    'Implement lift:  L = ½ρV²·S·Cl(α)',
-    'Implement drag:  D = ½ρV²·S·Cd(α)',
-    'Add pitching moment Cm(α)',
-    'Switch Euler → RK4, compare outputs'
-  ]},
-  {num:'WK-03',name:'Full 6DOF',tag:'Dynamics',tasks:[
-    'Add lateral/directional equations of motion',
-    'Implement roll and yaw dynamics',
-    'Model elevator, aileron, rudder as moment inputs',
-    'Calculate a trim (straight-and-level) state',
-    'Apply a step input, observe response'
-  ]},
-  {num:'WK-04',name:'Polish',tag:'Visualisation',tasks:[
-    '3D trajectory plot in Matplotlib',
-    'Simulate a stall or banked turn manoeuvre',
-    'Add simple autopilot or pilot input loop',
-    'Write README explaining the physics',
-    'Push to GitHub'
-  ]}
+  {
+    num:'WK-01',name:'Python + Basic Physics',tag:'Foundations',
+    tasks:[
+      'Install NumPy, SciPy, Matplotlib — run a test plot to confirm working',
+      'Define 12-element state vector: position (x,y,z), velocity (u,v,w), Euler angles (φ,θ,ψ), angular rates (p,q,r)',
+      'Implement gravity (F = mg downward) and simple linear drag',
+      'Write Euler integration loop — advance state by one timestep dt',
+      'Plot a basic trajectory (cannonball arc) — altitude vs time and x vs z'
+    ]
+  },
+  {
+    num:'WK-02',name:'Cessna 172 Aerodynamics',tag:'Aero model',
+    tasks:[
+      'Look up NACA 2412 Cl/Cd data from UIUC database, load into Python as arrays',
+      'Implement lift:  L = ½ρV²·S·Cl(α) with angle-of-attack lookup',
+      'Implement drag:  D = ½ρV²·S·Cd(α)',
+      'Add pitching moment:  M = ½ρV²·S·c·Cm(α)',
+      'Replace Euler integrator with RK4 — compare outputs, note stability improvement'
+    ]
+  },
+  {
+    num:'WK-03',name:'Full 6DOF Dynamics',tag:'Rotation',
+    tasks:[
+      'Implement rotation matrix: body frame → inertial frame',
+      'Add lateral and directional equations of motion (roll, yaw)',
+      'Model elevator, aileron, rudder as moment contributions to the EOM',
+      'Calculate a trim state for straight-and-level flight at cruise speed',
+      'Apply a step pitch disturbance — observe phugoid oscillation in output'
+    ]
+  },
+  {
+    num:'WK-04',name:'Circuit Autopilot',tag:'Tullamarine',
+    tasks:[
+      'Define YMML runway 16 threshold coordinates and elevation (132m AMSL)',
+      'Build autopilot state machine: takeoff → crosswind → downwind → base → final',
+      'Implement each leg as a heading/altitude target with PID-style control inputs',
+      'Fly the full left-hand circuit at 1000ft AAL, log full state history',
+      'Plot altitude, airspeed, heading over the circuit duration — verify legs look correct'
+    ]
+  },
+  {
+    num:'WK-05',name:'Google Earth Output',tag:'KML export',
+    tasks:[
+      'Convert sim x/y/z offsets to latitude, longitude, altitude (WGS84)',
+      'Write KML exporter: position + heading/tilt/roll orientation at each timestep',
+      'Reference Cessna 172 model in KML — confirm aircraft rotates correctly in Google Earth',
+      'Add colour-coded LineString: green = normal flight, amber = slow, red = near stall',
+      'Open in Google Earth, verify circuit track matches Tullamarine layout visually'
+    ]
+  },
+  {
+    num:'WK-06',name:'Polish + Buffer',tag:'Wrap-up',
+    tasks:[
+      'Buffer: catch up on anything that overran in weeks 3–5',
+      'Tune the approach — model flap deployment and speed reduction on final',
+      'Add a go-around scenario: abort at 200ft, climb away, re-join circuit',
+      'Write a short README explaining the physics and how to run the sim',
+      'Final Google Earth flythrough — record a screen capture if possible'
+    ]
+  }
 ];
 
-let checks=JSON.parse(localStorage.getItem('6dof-v2-checks')||'{}');
-
-function saveChecks(){localStorage.setItem('6dof-v2-checks',JSON.stringify(checks))}
+let checks=JSON.parse(localStorage.getItem('6dof-tulla-checks-v1')||'{}');
+function saveChecks(){localStorage.setItem('6dof-tulla-checks-v1',JSON.stringify(checks))}
 
 function toggle(id){
-  checks[id]=!checks[id];
-  saveChecks();
-  renderStats();
-  // update just this row
+  checks[id]=!checks[id];saveChecks();renderStats();
   const row=document.querySelector(`[data-id="${id}"]`);
   if(row){
-    const cb=row.querySelector('.cb');
-    const txt=row.querySelector('.task-txt');
-    cb.className='cb'+(checks[id]?' on':'');
-    txt.className='task-txt'+(checks[id]?' done':'');
+    row.querySelector('.cb').className='cb'+(checks[id]?' on':'');
+    row.querySelector('.task-txt').className='task-txt'+(checks[id]?' done':'');
   }
-  // update week bar
-  const wi=parseInt(id.split('-')[0]);
-  updateWeekBar(wi);
+  const wi=parseInt(id.split('-')[0]);updateWeekBar(wi);
 }
 
 function updateWeekBar(wi){
@@ -454,8 +434,8 @@ function updateWeekBar(wi){
   const pct=Math.round(done/w.tasks.length*100);
   const bar=document.getElementById(`wkbar-${wi}`);
   const count=document.getElementById(`wkcount-${wi}`);
-  if(bar) bar.style.width=pct+'%';
-  if(count) count.textContent=`${done}/${w.tasks.length}`;
+  if(bar)bar.style.width=pct+'%';
+  if(count)count.textContent=`${done}/${w.tasks.length}`;
 }
 
 function renderStats(){
@@ -470,7 +450,7 @@ function renderStats(){
 }
 
 function renderChecklist(){
-  const el=document.getElementById('panel-checklist');
+  const el=document.getElementById('panel-checklist-inner');
   el.innerHTML='';
   WEEKS.forEach((w,wi)=>{
     const done=w.tasks.filter((_,ti)=>checks[`${wi}-${ti}`]).length;
@@ -508,100 +488,38 @@ let notes=JSON.parse(localStorage.getItem('6dof-notes-v4')||'[]');
 let openNotes=new Set();
 let activeCat='general';
 let activeFilter='all';
-
 function saveNotes(){localStorage.setItem('6dof-notes-v4',JSON.stringify(notes))}
-
-function selectCat(cat){
-  activeCat=cat;
-  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.toggle('sel',p.dataset.cat===cat));
-}
-
-function setFilter(f,btn){
-  activeFilter=f;
-  document.querySelectorAll('.cf-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));
-  renderNotes();
-}
-
+function selectCat(cat){activeCat=cat;document.querySelectorAll('.cat-pill').forEach(p=>p.classList.toggle('sel',p.dataset.cat===cat))}
+function setFilter(f,btn){activeFilter=f;document.querySelectorAll('.cf-btn').forEach(b=>b.classList.toggle('active',b.dataset.f===f));renderNotes()}
 function addNote(){
   const titleEl=document.getElementById('note-title-input');
   const bodyEl=document.getElementById('note-input');
-  const title=titleEl.value.trim();
-  const body=bodyEl.value.trim();
+  const title=titleEl.value.trim();const body=bodyEl.value.trim();
   if(!title&&!body)return;
-  const n={
-    id:Date.now(),
-    title:title||'Untitled',
-    body:body,
-    cat:activeCat,
-    ts:new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})
-  };
-  notes.unshift(n);
-  openNotes.add(n.id);
-  saveNotes();
-  titleEl.value='';bodyEl.value='';
-  titleEl.focus();
-  renderNotes();
+  const n={id:Date.now(),title:title||'Untitled',body:body,cat:activeCat,ts:new Date().toLocaleString('en-AU',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})};
+  notes.unshift(n);openNotes.add(n.id);saveNotes();titleEl.value='';bodyEl.value='';titleEl.focus();renderNotes();
 }
-
-function deleteNote(id,e){
-  e.stopPropagation();
-  notes=notes.filter(n=>n.id!==id);
-  openNotes.delete(id);
-  saveNotes();
-  renderNotes();
-}
-
-function toggleNote(id){
-  if(openNotes.has(id))openNotes.delete(id);
-  else openNotes.add(id);
-  const card=document.querySelector(`.note-card[data-id="${id}"]`);
-  if(card)card.classList.toggle('open',openNotes.has(id));
-}
-
+function deleteNote(id,e){e.stopPropagation();notes=notes.filter(n=>n.id!==id);openNotes.delete(id);saveNotes();renderNotes()}
+function toggleNote(id){if(openNotes.has(id))openNotes.delete(id);else openNotes.add(id);const card=document.querySelector(`.note-card[data-id="${id}"]`);if(card)card.classList.toggle('open',openNotes.has(id))}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-function highlight(text,q){
-  if(!q)return esc(text);
-  const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
-  return esc(text).replace(re,'<mark>$1</mark>').replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\/mark&gt;/g,'</mark>');
-}
-
+function highlight(text,q){if(!q)return esc(text);const re=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');return esc(text).replace(re,'<mark>$1</mark>').replace(/&lt;mark&gt;/g,'<mark>').replace(/&lt;\/mark&gt;/g,'</mark>')}
 function renderNotes(){
   const q=(document.getElementById('note-search')?.value||'').trim().toLowerCase();
   const el=document.getElementById('notes-list');
   const countEl=document.getElementById('search-count');
   let filtered=notes;
-  if(activeFilter!=='all') filtered=filtered.filter(n=>(n.cat||'general')===activeFilter);
-  if(q) filtered=filtered.filter(n=>n.title.toLowerCase().includes(q));
+  if(activeFilter!=='all')filtered=filtered.filter(n=>(n.cat||'general')===activeFilter);
+  if(q)filtered=filtered.filter(n=>n.title.toLowerCase().includes(q));
   const total=activeFilter==='all'?notes.length:notes.filter(n=>(n.cat||'general')===activeFilter).length;
-  if(countEl) countEl.textContent=q?`${filtered.length} result${filtered.length!==1?'s':''}`:total?`${total} note${total!==1?'s':''}`:'';
-  if(!filtered.length){
-    el.innerHTML=`<div class="notes-empty">${q?'No notes match "'+esc(q)+'"':'No notes in this category yet'}</div>`;
-    return;
-  }
-  el.innerHTML=filtered.map(n=>{
-    const cat=n.cat||'general';
-    return`<div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}">
-      <div class="note-card-head" onclick="toggleNote(${n.id})">
-        <span class="note-badge ${cat}">${cat}</span>
-        <span class="note-title">${highlight(n.title,q)}</span>
-        <span class="note-ts">${n.ts}</span>
-        <button class="btn-del" onclick="deleteNote(${n.id},event)" title="Delete">✕</button>
-      </div>
-      ${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}
-    </div>`;
-  }).join('');
+  if(countEl)countEl.textContent=q?`${filtered.length} result${filtered.length!==1?'s':''}`:total?`${total} note${total!==1?'s':''}`:'';
+  if(!filtered.length){el.innerHTML=`<div class="notes-empty">${q?'No notes match "'+esc(q)+'"':'No notes yet — add one above'}</div>`;return}
+  el.innerHTML=filtered.map(n=>{const cat=n.cat||'general';return`<div class="note-card${openNotes.has(n.id)?' open':''}" data-id="${n.id}"><div class="note-card-head" onclick="toggleNote(${n.id})"><span class="note-badge ${cat}">${cat}</span><span class="note-title">${highlight(n.title,q)}</span><span class="note-ts">${n.ts}</span><button class="btn-del" onclick="deleteNote(${n.id},event)" title="Delete">✕</button></div>${n.body?`<div class="note-card-body">${esc(n.body)}</div>`:''}</div>`}).join('');
 }
 
-document.getElementById('note-input').addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&(e.metaKey||e.ctrlKey))addNote();
-});
-document.getElementById('note-title-input').addEventListener('keydown',function(e){
-  if(e.key==='Enter'){e.preventDefault();document.getElementById('note-input').focus()}
-});
+document.getElementById('note-input').addEventListener('keydown',function(e){if(e.key==='Enter'&&(e.metaKey||e.ctrlKey))addNote()});
+document.getElementById('note-title-input').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();document.getElementById('note-input').focus()}});
 
 renderNotes();
-
 renderChecklist();
 renderStats();
 </script>
